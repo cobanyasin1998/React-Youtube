@@ -1,22 +1,22 @@
 import "./tailwind.css";
-import Button from "./Components/Button";
-import Tab from "./Components/Tab";
+
+import { forwardRef, useRef } from "react";
+
+const Input = forwardRef((props, ref) => {
+  return <input ref={ref} type="text" {...props} />;
+});
 
 function App() {
+  const inputRef = useRef();
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
+
   return (
     <>
-      <div style={{ padding: 10 }}>
-        <Button variant="success" text="success Buton Örneği"></Button>
-        <Button variant="danger" text="danger Buton Örneği"></Button>
-        <Button variant="warning" text="warning Buton Örneği"></Button>
-        <Button variant="info" text="info Buton Örneği"></Button>
-
-        <Tab>
-          <Tab.Panel title="Profil">1.tab</Tab.Panel>
-          <Tab.Panel title="Hakkında">2.tab</Tab.Panel>
-          <Tab.Panel title="Ayarlar"> 3.tab</Tab.Panel>
-        </Tab>
-      </div>
+      <h1>useRef() - forwardRef()</h1>
+      <Input type="text" ref={inputRef} />
+      <button onClick={focusInput}>Focusla</button>
     </>
   );
 }
