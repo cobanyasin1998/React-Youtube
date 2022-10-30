@@ -1,84 +1,155 @@
-import { useReducer, useState, useCallback, useMemo } from "react";
-import AddTodo from "./Components/AddTodo";
-import Header from "./Components/Header";
-import Todos from "./Components/Todos";
-import reducer from "./reducers/todoReducers";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, {
-    todos: [],
-    todo: "",
-    search: "",
-  });
+  const categoryList = [
+    { key: 1, value: "PHP" },
+    { key: 2, value: "Node.JS" },
+    { key: 3, value: "CSS" },
+    { key: 4, value: "Html" },
+  ];
+  const [name, setName] = useState("Yasin");
+  const [description, setDescription] = useState("Çoban");
+  const [gender, setGender] = useState(1);
+  const [categories, setCategories] = useState([2, 4]);
+  const [rule, setRule] = useState(false);
+  const [avatar, setAvatar] = useState(false);
+  const [image, setImage] = useState('');
 
-  const [count, setCount] = useState(0);
-
-  // const [todos, setTodos] = useState([]);
-  // const [todo, setTodo] = useState();
-
-  // const submitHandle = useCallback(e => {
-  //   e.preventDefault();
-
-  //   dispatch({
-  //     type: "ADD_TODO",
-  //     todo: state.todo,
-  //   });
-  // };
-
-  const submitHandle = useCallback(
-    (e) => {
-      e.preventDefault();
-      // setTodos([...todos, todo]);
-      // setTodo("");
-      dispatch({
-        type: "ADD_TODO",
-        todo: state.todo,
+  useEffect(() => {
+    if (avatar) {
+      
+      const fileReader = new FileReader();
+      fileReader.addEventListener("load", function () {
+        
+        setImage(this.result);
       });
+      fileReader.readAsDataURL(avatar);
+    }
+  }, [avatar]);
+
+  const [rules, setRules] = useState([
+    { key: 1, value: "1.kuralı kabul ediyorum", checked: false },
+    { key: 2, value: "2.kuralı kabul ediyorum", checked: false },
+    { key: 3, value: "3.kuralı kabul ediyorum", checked: true },
+  ]);
+  const genders = [
+    {
+      key: "1",
+      value: "Erkek",
     },
-    [state.todo]
-  );
+    {
+      key: "2",
+      value: "Kadın",
+    },
+  ];
 
-  const changeTodo = useCallback((e) => {
-    //setTodo(e);
-    dispatch({
-      type: "SET_TODO",
-      value: e,
-    });
-  }, []);
+  const selectedGender = genders.find((g) => g.key === gender);
 
-  const searchHandle = (e) => {
-    dispatch({
-      type: "SET_SEARCH",
-      value: e.target.value,
-    });
-  };
+  const checkRule = (key, checked) => {
+    debugger;
+    setRules((rules) =>
+      rules.map((rule) => {
+        if (key === rule.key) {
+          rule.checked = checked;
+        }
 
-  const filteredTodos = useMemo(() => {
-    return state.todos.filter((todo) =>
-      todo.toLocaleLowerCase("TR").includes(state.search.toLocaleLowerCase())
+        return rule;
+      })
     );
-  }, [state.todos, state.search]);
+  };
 
   return (
     <>
-      <h1>Todo App</h1>
-      <h3>{count}</h3>
-      <button onClick={() => setCount((count) => count + 1)}>Arttır</button>
-      <hr></hr>
-
-      <Header></Header>
+      <button
+        onClick={() => {
+          setName("Meltem");
+        }}
+      >
+        Adı Değiştir
+      </button>
       <input
-        value={state.search}
         type="text"
-        placeholder="Todolarda Ara"
-        onChange={searchHandle}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
       />
-      <AddTodo
-        submitHandle={submitHandle}
-        changeTodo={changeTodo}
-        todo={state.todo}
-      ></AddTodo>
-      <Todos todosParam={filteredTodos}></Todos>
+
+      {name}
+      <br></br>
+      <textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      {description}
+      <br></br>
+
+      <select value={gender} onChange={(e) => setGender(e.target.value)}>
+        <option value="">Seçiniz</option>
+
+        {genders.map((gender) => (
+          <option value={gender.key} key={gender.key}>
+            {gender.value}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={categories}
+        multiple={true}
+        onChange={(e) =>
+          setCategories(
+            [...e.target.selectedOptions].map((option) => option.value)
+          )
+        }
+      >
+        <option value="">Seçiniz</option>
+
+        {categoryList.map((cat) => (
+          <option value={cat.key} key={cat.key}>
+            {cat.value}
+          </option>
+        ))}
+      </select>
+
+      {JSON.stringify(selectedGender, null, 2)}
+      {JSON.stringify(categories, null, 2)}
+
+      <br></br>
+
+      <label>
+        <input
+          type="checkbox"
+          checked={rule}
+          onChange={(e) => setRule(e.target.checked)}
+        />
+        Kuralları Kabul Ediyorum
+      </label>
+
+      {rules.map((rule) => (
+        <label key={rule.key}>
+          <input
+            type="checkbox"
+            checked={rule.checked}
+            onChange={(e) => {
+              checkRule(rule.key, e.target.value);
+            }}
+          />
+          {rule.value}
+        </label>
+      ))}
+      <br></br>
+
+      <button disabled={!rule}>Devam Et</button>
+      <br></br>
+      <label>
+        <input type="file" onChange={(e) => setAvatar(e.target.files[0])} />
+      </label>
+
+      {avatar && (
+        <>
+          <h3>{avatar.name}</h3>
+          {image && <img src={image} alt="Resim" />}
+        </>
+      )}
     </>
   );
 }
