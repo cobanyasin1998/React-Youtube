@@ -1,11 +1,15 @@
 function siteReducer(state, action) {
     switch (action.type) {
-      case "SET_TODO":
+      case "SWITCH_THEME":
         return {
           ...state,
-          todo: action.value,
+          theme: action.value,
         };
-      
+        case "SWITCH_LANG":
+          return {
+            ...state,
+            language: action.value,
+          };
       default:
         return;
     }

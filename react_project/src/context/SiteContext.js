@@ -1,21 +1,21 @@
-import { createContext, useContext, useState } from "react";
-const Context = createContext();
+import { createContext, useContext, useReducer } from "react";
+import siteReducer from "../reducers/siteReducers";
 
+const Context = createContext();
 const Provider = ({ children }) => {
-  const [theme, setTheme] = useState("light");
-  const [language, setLanguage] = useState("tr");
+  const [state, dispatch] = useReducer(siteReducer, {
+    theme: "light",
+    language: "tr",
+  });
 
   const data = {
-    theme,
-    setTheme,
-    language,
-    setLanguage,
+    ...state,
+    dispatch,
   };
+ 
   return <Context.Provider value={data}>{children}</Context.Provider>;
 };
 
-
-export const useSite = () => useContext(Context)
-
+export const useSite = () => useContext(Context);
 
 export default Provider;

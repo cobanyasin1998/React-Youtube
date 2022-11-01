@@ -1,17 +1,26 @@
-import {useSite} from "../context/index";
+import { useSite } from "../context/index";
 
 export default function SwitchTheme() {
-  const { setTheme, theme, language, setLanguage } = useSite();
+  const { theme, language, dispatch } = useSite();
 
+  const switchTheme = () => {
+    dispatch({
+      type: "SWITCH_THEME",
+      value: theme === "light" ? "dark" : "light",
+    });
+  };
+  const switchLang = () => {
+
+    dispatch({
+      type: "SWITCH_LANG",
+      value: language === "tr" ? "en" : "tr",
+    });
+  };
   return (
     <>
-      <button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
-        Temayı Değiştir
-      </button>{" "}
-      {theme} <br></br>
-      <button onClick={() => setLanguage(language === "tr" ? "en" : "tr")}>
-        Dili Değiştir
-      </button>
+      <button onClick={() => switchTheme()}>Temayı Değiştir</button> {theme}{" "}
+      <br></br>
+      <button onClick={() => switchLang()}>Dili Değiştir</button>
       {language} <br></br>
     </>
   );
